@@ -1,4 +1,4 @@
-import 'package:cubex_countries_app/presentation/feature/bloc/country_bloc.dart';
+import 'package:cubex_countries_app/blocs/bloc/country_bloc.dart';
 import 'package:cubex_countries_app/presentation/feature/pages/onboard/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

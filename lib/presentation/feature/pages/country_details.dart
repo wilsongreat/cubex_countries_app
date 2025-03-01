@@ -1,7 +1,7 @@
+import 'package:cubex_countries_app/blocs/bloc/country_bloc.dart';
 import 'package:cubex_countries_app/config/app_colors.dart';
 import 'package:cubex_countries_app/data/models/country_details_model.dart';
 import 'package:cubex_countries_app/presentation/components/shared/custom_btn.dart';
-import 'package:cubex_countries_app/presentation/feature/bloc/country_bloc.dart';
 import 'package:cubex_countries_app/src/components.dart';
 
 import 'package:cubex_countries_app/utils/screen_utils.dart';

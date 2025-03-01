@@ -1,6 +1,6 @@
+import 'package:cubex_countries_app/blocs/bloc/country_bloc.dart';
 import 'package:cubex_countries_app/config/app_colors.dart';
 import 'package:cubex_countries_app/data/models/countries_model.dart';
-import 'package:cubex_countries_app/presentation/feature/bloc/country_bloc.dart';
 import 'package:cubex_countries_app/src/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
