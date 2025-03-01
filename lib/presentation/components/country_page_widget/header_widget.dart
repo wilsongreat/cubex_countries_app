@@ -4,13 +4,20 @@ import 'package:cubex_countries_app/utils/screen_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({super.key});
+class HeaderWidget extends StatefulWidget {
+  final Function(String val) onChange;
+   final TextEditingController controller ;
+   const HeaderWidget({super.key,required this.onChange, required this.controller});
 
+  @override
+  State<HeaderWidget> createState() => _HeaderWidgetState();
+}
+
+class _HeaderWidgetState extends State<HeaderWidget> {
   @override
 
   Widget build(BuildContext context) {
-    final TextEditingController controller = TextEditingController();
+
     return  Container(
       height: fullHeight(context) * .3,
       width: fullWidth(context),
@@ -44,7 +51,8 @@ class HeaderWidget extends StatelessWidget {
               ],
             ),
           ),
-          SearchInput(controller: controller),
+          SearchInput(controller: widget.controller,
+          onChange: widget.onChange,),
         ],
       ),
     );

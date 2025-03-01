@@ -14,87 +14,126 @@ class CountriesPage extends StatefulWidget {
 }
 
 class _CountriesPageState extends State<CountriesPage> {
-
-@override
+  @override
   void initState() {
     super.initState();
     context.read<CountryBloc>().add(CountryInitialFetchEvent());
   }
-  List<CountriesResponseModel> _responseModel=[];
- bool isLoading =false;
+
+  List<CountriesResponseModel> _responseModel = [];
+  bool isLoading = false;
+  CountryState _countryState = CountryInitial();
+  void _onSearchChanged(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        _responseModel = [];
+      });
+      return;
+    }
+
+    // Update suggestions
+    if (_countryState is CountrySuccess) {
+
+      setState(() {
+        _responseModel = (_countryState as CountrySuccess)
+            .countriesResponseModel
+            .where((country) => country.name!.common!
+            .toLowerCase()
+            .contains(value.trim().toLowerCase()))
+            .toList();
+      });
+      // for(var data in _responseModel){
+      //   print(data.name?.common);
+      //
+      // }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  BlocConsumer<CountryBloc,CountryState>(
-      listener: (context, state) {
-        if (state is CountrySuccess){
-          _responseModel =state.countriesResponseModel;
-          setState(() {
-            isLoading=false;
-          });
-        }
-        if (state is CountryInitial){
-          setState(() {
-            isLoading=true;
-          });
-        }
-        if(state is CountryFailure){
-          setState(() {
-            isLoading=false;
-          });
-        }
-      },
-      builder: (context, snapshot) {
-        return Skeletonizer(
-          enabled: isLoading,
-          child: Scaffold(
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  HeaderWidget(),
-                  Gap(20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: _responseModel.length == 0?
-                        Center(child: TextView(text: "NO AVAILABLE DATA",fontSize: 20,fontWeight: FontWeight.w700,color: AppColors.kTaupe,))
-                        :Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextView(text: "Countrie(s)", fontSize: 25,color: AppColors.kTaupe,fontWeight: FontWeight.bold,),
-                        ListView.separated(
-                          primary: false,
-                          padding: EdgeInsets.only(top: 10),
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                            itemCount: _responseModel.length,
-                            itemBuilder: (context,i){
-                            var countryData=_responseModel[i];
-                            return CountryListTile(
-                              countryCapital: countryData.capital?[0],
-                              countryName: countryData.name?.common,
-                              lang: countryData.languages?.eng,
-                              countryFlagImg: countryData.flags?.png,
-                              mapUrl: countryData.flags!.png,
-                            );
-                        }, separatorBuilder: (BuildContext context, int index) {
-                            return Gap(10);
-                        },)
-                      ],
-                    ),
-                  )
-                ],
-              ),
+    final TextEditingController controller = TextEditingController();
+    return BlocConsumer<CountryBloc, CountryState>(listener: (context, state) {
+      if (state is CountrySuccess) {
+        _responseModel = state.countriesResponseModel;
+        _countryState = state;
+
+        setState(() {
+          isLoading = false;
+        });
+      }
+      if (state is CountryInitial) {
+        setState(() {
+          isLoading = true;
+        });
+      }
+      if (state is CountryFailure) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }, builder: (context, snapshot) {
+      return Skeletonizer(
+        enabled: isLoading,
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HeaderWidget(
+                  onChange: (val) {
+                    _onSearchChanged(val);
+                  },
+                  controller: controller,
+                ),
+                Gap(20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: _responseModel.length == 0
+                      ? Center(
+                          child: TextView(
+                          text: "NO AVAILABLE DATA",
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.kTaupe,
+                        ))
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextView(
+                              text: "Countrie(s)",
+                              fontSize: 25,
+                              color: AppColors.kTaupe,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            ListView.separated(
+                              primary: false,
+                              padding: EdgeInsets.only(top: 10),
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: _responseModel.length,
+                              itemBuilder: (context, i) {
+                                var countryData = _responseModel[i];
+                                return CountryListTile(
+                                  countryCapital: countryData.capital?[0],
+                                  countryName: countryData.name?.common,
+                                  lang: countryData.languages?.eng,
+                                  countryFlagImg: countryData.flags?.png,
+                                  mapUrl: countryData.flags!.png,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return Gap(10);
+                              },
+                            )
+                          ],
+                        ),
+                )
+              ],
             ),
           ),
-        );
-      }
-    );
+        ),
+      );
+    });
   }
 }
-
-
-
-
-
-
-

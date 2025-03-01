@@ -2,25 +2,30 @@ import 'package:cubex_countries_app/config/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hicons/flutter_hicons.dart';
 
-class SearchInput extends StatelessWidget {
+class SearchInput extends StatefulWidget {
   final TextEditingController controller ;
+  final Function(String val) onChange;
+   const SearchInput({super.key, required this.controller,required this.onChange});
 
-  const SearchInput({super.key, required this.controller});
+  @override
+  State<SearchInput> createState() => _SearchInputState();
+}
 
+class _SearchInputState extends State<SearchInput> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: TextField(
-        controller: controller,
+        controller: widget.controller,
         decoration: InputDecoration(
           hintText: "Search...",
           prefixIcon: Icon(Icons.search),
-          suffixIcon: controller.text.isNotEmpty
+          suffixIcon: widget.controller.text.isNotEmpty
               ? IconButton(
             icon: Icon(Icons.clear,color: AppColors.kTaupe,),
             onPressed: () {
-              controller.clear();
+              widget.controller.clear();
             },
           )
               : Icon(Hicons.location_light_outline,color: AppColors.kTaupe,),
@@ -39,8 +44,8 @@ class SearchInput extends StatelessWidget {
           filled: true,
           fillColor: AppColors.kTaupeLight,
         ),
-        onChanged: (value) {
-          // Handle search logic
+        onChanged: (value){
+          widget.onChange(value);
         },
       ),
     );
